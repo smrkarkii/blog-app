@@ -1,0 +1,61 @@
+---------IMPORT and EXPORT--------
+module.exports = {sum} ;
+                or
+exports.sum = function sabai
+const smthg = require("./")
+
+
+----------ARROW FUNCTIONS --------
+    const sum = (a,b) => {
+        return ;
+    };
+    for one line const sum = () => a;
+    only one
+    const sum = a => a;
+
+    --------OBJECT DESTRUCTING-------
+    const {sum, add}= require
+
+
+    ---------NODE JS CORE MODULES HTTP MODULES----------
+
+const http = require('http)
+cosnt server = http.createServer((Req,res) => {
+    res.end("hello");
+});
+
+------------NPM PACKAGES-----------
+nodemon
+express-- const app = express()
+
+
+----------event loop--------
+const fs= require
+callback functino
+    fs watch filename and callbacks->see changes
+
+    -----------async programming ---------------
+    
+    ----------express js server----------
+  -------------ROUTES----------  
+  -------------MIDDLE WARES----------
+  app.use()
+  -------------controllers-------
+controls actions to be done like post get delete
+---------------models--------------
+to interact with database
+------------body parser-------
+install body parser to access body of request
+----------Validation_______----
+---------Gettting posts from database---
+here notes can be made
+
+-------authentication--------
+code refractoring 
+    extract directly functions like const {getPost}
+
+
+
+
+    -----trying users register and login------
+    
