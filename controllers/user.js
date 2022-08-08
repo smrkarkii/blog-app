@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
 const User = require('../models/user');
-const expressJwt = require("express-jwt")
+const expressJwt = require("express-jwt");
+const { response, Router } = require('express');
 
 exports.getUser = (req, res) => {
     const user = User.find()
@@ -21,60 +23,81 @@ exports.getUser = (req, res) => {
     // })
 };
 
-exports.createUser = (req, res) => {
-    const user = new User(req.body)// of model user
-    console.log("creating user:", req.body)
-    user.save()  //save returns error and user   user.save( err, user)
-    .then((result) => {
-        res.status(200).json({
-            user:result,
-            message:"Successfully signed up"
-        })
+exports.createUser = async (req, res) => {
+    try{
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(req.body.password, salt);
+    const newUser = new User({
+        name:req.body.name,
+        email:req.body.email,
+        password:hash,
+        phone:req.body.phone,
     })
-    .catch(err => console.log(err))
+
+    const user = await newUser.save();
+    res.status(200).json(user);
+    }
+    catch(err){
+    res.status(500).json(err);
+    }
 }
 
 
 
 
-    exports.loginUser = (req, res) => {
-    //   const username = req.body.username
-    //   const user = {name:username}
-    //   const accessToken = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET)
-    //     res.json({accessToken: accessToken});
-    const {email, password} = req.body
-
-    User.findOne({email}, (err, user) => {
-        if(err || !email){
-            return res.status(404).json({
+    exports.loginUser = async (req, res) => {
+    try{
+    const {email} = req.body
+    const user = await User.findOne({email:email})
+    const validate = await bcrypt.compare(req.body.password , user.password)
+        if(!user){
+            res.status(400).json({
                 error:"Email not found"
             })
         } 
-        if(user.password != password){
-            return res.status(400).json({
+         else if(!validate){
+            res.status(400).json({
                 error:"Email and password doesn't match"
             })
         }
-
-        //create token
-        const token = jwt.sign({_id: user._id},process.env.ACCESS_TOKEN_SECRET)
-        //put token in cookies
-        res.cookie('token', token, {expire: new Date() + 1})//first ko token is response
-        //sending response to front end
-        const {_id, email, name} = user
-        return res.json({
-            token,
-            user:{
-                _id, name, email 
-            }
-        })
-    })
+        else{
+           // const {password, ...others} = user;
+            return res.status(200).json(user);
+        }
     }
-
+        catch(err){
+           res.status(500).json(err);
+        }
+    }
+    
 exports.logoutUser = (req, res) => {
     res.clearCookie("token")
     res.json({
         message:"User signed out successfull"
     })
 }
+//Update 
+exports.updateUser = async (req,res) => {
+    if(req.body.userId == req.params.id){
+        if(req.body.password){
+            const salt = await bcrypt.genSalt(10);
+            req.body.password = await bcrypt.hash(req.body.password, salt)
 
+        }
+    
+    try{
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, {
+            $set:req.body, //everything erequested
+        },{new:true});
+        res.status(200).json(updatedUser)
+       
+    }
+    catch(err){
+        res.status(500).json(err);
+
+    }
+}
+    else{
+       res.status(401).json("You can update only your accoung") 
+    }
+}
