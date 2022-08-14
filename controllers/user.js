@@ -1,28 +1,50 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 const User = require('../models/user');
+const Post = require('../models/post');
 const expressJwt = require("express-jwt");
 const { response, Router } = require('express');
+const { post } = require('../routes/user');
+const { render } = require('ejs');
 
-exports.getUser = (req, res) => {
-    const user = User.find()
+//home user
+exports.homeuser =   (req, res) => {
+    res.render('homeuser.ejs')
+}
+exports.registerPage = (req, res ) => {
+    res.render('register.ejs')
+}
+//getting  users
+exports.getUser = async (req, res) => {
+    await User.find()
    .then((result) => {
-       res.json({
-           user:result
+      res.render('users.ejs', {
+        users:result
+      })
        })
   
-   });
+   }
+   //getting a user
+   exports.getOneUser = async (req, res) => {
+    try{
+        const user = await User.findById(req.params.id);
+        //const {password, ...others} = user._doc
+        if(!user){
+            res.status(404).json("User not found")
+        }
+        else{
+            res.status(200).json(user);
+        }
         
-    // .then( (result) => {
-    //     res.json({
-    //         user:result
-    //     })
-    // })
-    // .catch(err => {
-    //     console.log(err)
-    // })
-};
+    }
+    catch(err){
+        res.status(500).json(err);
+    }
+  
+   }
+        
 
+//register
 exports.createUser = async (req, res) => {
     try{
     const salt = await bcrypt.genSalt(10);
@@ -35,7 +57,9 @@ exports.createUser = async (req, res) => {
     })
 
     const user = await newUser.save();
-    res.status(200).json(user);
+    res.render('afterRegister', {
+        user:newUser
+    })
     }
     catch(err){
     res.status(500).json(err);
@@ -62,7 +86,10 @@ exports.createUser = async (req, res) => {
         }
         else{
            // const {password, ...others} = user;
-            return res.status(200).json(user);
+           res.render('dashboard',{
+            user:user
+           });
+            
         }
     }
         catch(err){
@@ -78,7 +105,7 @@ exports.logoutUser = (req, res) => {
 }
 //Update 
 exports.updateUser = async (req,res) => {
-    if(req.body.userId == req.params.id){
+    if(req.body.userId === req.params.id){
         if(req.body.password){
             const salt = await bcrypt.genSalt(10);
             req.body.password = await bcrypt.hash(req.body.password, salt)
@@ -99,5 +126,30 @@ exports.updateUser = async (req,res) => {
 }
     else{
        res.status(401).json("You can update only your accoung") 
+    }
+}
+//delete
+exports.deleteUser = async (req,res) => {
+    if(req.body.userId === req.params.id){
+        try{
+            const user = await User.findById(req.params.id);
+            try{
+                await Post.deleteMany({username:user,username})
+                await User.findByIdAndDelete(req.params.id)
+                 res.status(200).json("user has been deleted")
+                
+             }
+             catch(err){
+                 res.status(500).json(err);
+         
+             }
+        }
+        catch(err){
+            res.status(404).json("User not found")
+        }
+    
+}
+    else{
+       res.status(400).json("You can delete only your account") 
     }
 }
