@@ -45,25 +45,28 @@ exports.getUser = async (req, res) => {
         
 
 //register
-exports.createUser = async (req, res) => {
+exports.createUser =  (req, res) => {
     try{
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(req.body.password, salt);
-    const newUser = new User({
-        name:req.body.name,
-        email:req.body.email,
-        password:hash,
-        phone:req.body.phone,
-    })
+    // const salt = await bcrypt.genSalt(10);
+    // const hash = await bcrypt.hash(req.body.password, salt);
+    // const newUser = new User({
+    //     name:req.body.name,
+    //     email:req.body.email,
+    //     password:hash,
+    //     phone:req.body.phone,
+    // })
 
-    const user = await newUser.save();
-    res.render('afterRegister', {
-        user:newUser
-    })
+    // const user = await newUser.save();
+    
+    // console.log(user);
+    res.json('req.body')
+    
     }
     catch(err){
-    res.status(500).json(err);
+    // res.redirect('/register');
+    res.json(err)
     }
+    
 }
 
 
@@ -75,18 +78,20 @@ exports.createUser = async (req, res) => {
     const user = await User.findOne({email:email})
     const validate = await bcrypt.compare(req.body.password , user.password)
         if(!user){
-            res.status(400).json({
-                error:"Email not found"
-            })
+            res.end(
+                "Email not found"
+            )
         } 
          else if(!validate){
-            res.status(400).json({
-                error:"Email and password doesn't match"
-            })
+            res.end(
+                "Email and password doesn't match"
+            )
         }
         else{
            // const {password, ...others} = user;
-           res.render('dashboard',{
+           //new session
+           req.session.user = req.body.email;
+           res.redirect('dashboard',{
             user:user
            });
             

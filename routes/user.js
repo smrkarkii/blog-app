@@ -12,7 +12,7 @@ const urlencodedParser = bodyParser.urlencoded({extend: false})
 user_route.get('/users', getUser);
 
 //register
-user_route.post('/register' , urlencodedParser , createUser);
+user_route.post('/register' , createUser);
 user_route.get('/register' ,  registerPage);
 user_route.post('/login',loginUser )
 user_route.get('/login',homeuser )

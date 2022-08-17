@@ -1,9 +1,9 @@
 const Post = require('../models/post')
 
-exports.getPosts = async (req, res) => {
-  await Post.find()
+exports.getPosts =  (req, res) => {
+   Post.find()
   .then(post =>{
-    res.render('posts', {
+    res.render('blogs', {
         posts:post
     })
   })
