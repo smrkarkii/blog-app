@@ -35,7 +35,7 @@ exports.createUser = async (req, res) => {
     })
 
     const user = await newUser.save();
-    res.status(200).json(user);
+    res.render('afterRegister')
     }
     catch(err){
     res.status(500).json(err);
@@ -62,7 +62,9 @@ exports.createUser = async (req, res) => {
         }
         else{
            // const {password, ...others} = user;
-            return res.status(200).json(user);
+             res.render('dashboard', {
+                user:user
+             })
         }
     }
         catch(err){
@@ -76,6 +78,7 @@ exports.logoutUser = (req, res) => {
         message:"User signed out successfull"
     })
 }
+
 //Update 
 exports.updateUser = async (req,res) => {
     if(req.body.userId == req.params.id){

@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const expressValidator = require('express-validator')
 const express = require('express');
 const app = express();
+const ejs = require('ejs')
+const expressLayouts = require('express-ejs-layouts')
 
 
 
@@ -21,6 +23,8 @@ const myMiddleware = (req, res, next) => {
     console.log('middleware applied');
     next();
 };
+app.set('view engine', 'ejs')
+app.use(expressLayouts)
 app.use(myMiddleware);
 app.use(bodyParser.json())
 app.use(expressValidator());
