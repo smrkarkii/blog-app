@@ -4,7 +4,7 @@ const validator = require('../validator')
 const {authUser} = require('../middlewares/auth.js')
 
 const router = express.Router()
-router.get('/', getPosts);
-router.post('/create-post', authUser, validator.createPostValidator, createPosts);
+router.get('/posts', getPosts);
+router.post('/create-post', createPosts);
 
 module.exports = router;    
