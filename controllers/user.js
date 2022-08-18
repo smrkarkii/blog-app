@@ -35,10 +35,13 @@ exports.createUser = async (req, res) => {
     })
 
     const user = await newUser.save();
-    res.render('afterRegister')
+    res.redirect('/afterRegister', {
+        user:user
+    })
     }
     catch(err){
-    res.status(500).json(err);
+    res.redirect('/error')
+    console.log(err)
     }
 }
 
@@ -51,24 +54,29 @@ exports.createUser = async (req, res) => {
     const user = await User.findOne({email:email})
     const validate = await bcrypt.compare(req.body.password , user.password)
         if(!user){
-            res.status(400).json({
-                error:"Email not found"
-            })
+            // res.status(400).json({
+            //     error:"Email not found"
+            // })
+            res.redirect('/error')
+            console.log(err)
         } 
          else if(!validate){
-            res.status(400).json({
-                error:"Email and password doesn't match"
-            })
-        }
+            // res.status(400).json({
+            //     error:"Email and password doesn't match"
+            // })
+            res.redirect('/error'
+       ) 
+    console.log(err)}
         else{
            // const {password, ...others} = user;
-             res.render('dashboard', {
+             res.redirect('/dashboard', {
                 user:user
              })
         }
     }
         catch(err){
-           res.status(500).json(err);
+           res.redirect('/error')
+           console.log(err)
         }
     }
     
