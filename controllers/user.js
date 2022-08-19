@@ -52,7 +52,7 @@ exports.createUser = async (req, res) => {
     try{
     const {email} = req.body
     const user = await User.findOne({email:email})
-    const validate = await bcrypt.compare(req.body.password , user.password)
+   
         if(!user){
             // res.status(400).json({
             //     error:"Email not found"
@@ -60,20 +60,25 @@ exports.createUser = async (req, res) => {
             res.redirect('/error')
             console.log(err)
         } 
-         else if(!validate){
+        
+         else{
+            const validate = await bcrypt.compare(req.body.password , user.password)
+            if(!validate){
             // res.status(400).json({
             //     error:"Email and password doesn't match"
             // })
-            res.redirect('/error'
-       ) 
-    console.log(err)}
-        else{
-           // const {password, ...others} = user;
-             res.redirect('/dashboard', {
-                user:user
-             })
+            res.redirect('/error') 
+            console.log(err)
         }
+        else{
+            // const {password, ...others} = user;
+              res.redirect('/dashboard', {
+                 user:user
+              })
+         }
+       
     }
+}
         catch(err){
            res.redirect('/error')
            console.log(err)
