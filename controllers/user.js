@@ -33,11 +33,11 @@ exports.createUser = async (req, res) => {
     });
 
     const user = await newUser.save();
-    res.redirect("/afterRegister", {
-      user: user,
-    });
-  } catch (err) {
-    res.redirect("/error");
+    console.log(user)
+    res.redirect("/afterRegister");
+  } 
+  catch (err) {
+    res.json(err)
   }
 };
 
@@ -56,7 +56,7 @@ exports.loginUser = async (req, res) => {
           error: "Email and password doesn't match",
         });
       } else {
-        return res.status(200).json(user);
+        return res.redirect('/dashboard')
       }
     }
   } catch (err) {

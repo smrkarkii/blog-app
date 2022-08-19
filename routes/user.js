@@ -8,6 +8,9 @@ const user_route = express.Router()
 user_route.get('/users', getUser);
 //register
 user_route.post('/register', createUser);
+user_route.get('/afterregister', (req,res) => {
+    res.render('afterRegister')
+});
 user_route.get('/register', (req, res) => {
     res.render('register')
 });
