@@ -35,12 +35,12 @@ exports.createUser = async (req, res) => {
     })
 
     const user = await newUser.save();
-    res.redirect('/afterRegister', {
+    res.redner('afterRegister', {
         user:user
     })
     }
     catch(err){
-    res.redirect('/error')
+    res.redner('error')
     console.log(err)
     }
 }
@@ -57,8 +57,10 @@ exports.createUser = async (req, res) => {
             // res.status(400).json({
             //     error:"Email not found"
             // })
-            res.redirect('/error')
-            console.log(err)
+            // res.redner('/error')
+           res.status(400).json({
+            err:"User don't exisrt"
+           })
         } 
         
          else{
@@ -67,21 +69,23 @@ exports.createUser = async (req, res) => {
             // res.status(400).json({
             //     error:"Email and password doesn't match"
             // })
-            res.redirect('/error') 
-            console.log(err)
+           res.status(400).json({
+            err:"Email and password doesn't match"
+           })
         }
         else{
             // const {password, ...others} = user;
-              res.redirect('/dashboard', {
-                 user:user
+              res.render('blogs', {
+                 user
               })
          }
        
     }
 }
         catch(err){
-           res.redirect('/error')
-           console.log(err)
+           response.status(400).json({
+            err:"ERror"
+           })
         }
     }
     
