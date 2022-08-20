@@ -27,6 +27,7 @@ app.set('view engine', 'ejs')
 app.use(expressLayouts)
 app.use(myMiddleware);
 app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: true }));
 app.use(expressValidator());
 app.use('/', postRoutes);//work as middleware
 app.use('/',user_route);

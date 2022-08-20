@@ -56,7 +56,9 @@ exports.loginUser = async (req, res) => {
           error: "Email and password doesn't match",
         });
       } else {
-        return res.redirect('/dashboard')
+        return res.render('dashboard',{
+          user:user
+        })
       }
     }
   } catch (err) {
