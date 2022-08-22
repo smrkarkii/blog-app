@@ -1,6 +1,7 @@
 # blog-app
 Step 1: npm install
-Step 2: npm run dev
+Step 2: Create a .env file and add your database credentials there
+Step 3: npm run dev
 
 For login system:
 To register: http://localhost:8080/register
