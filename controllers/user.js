@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const expressJwt = require("express-jwt");
 const { response, Router } = require("express");
+const { render } = require("ejs");
 
 exports.getUser = (req, res) => {
   const user = User.find().then((result) => {
@@ -33,11 +34,9 @@ exports.createUser = async (req, res) => {
     });
 
     const user = await newUser.save();
-    console.log(user)
-    res.redirect("/afterRegister");
-  } 
-  catch (err) {
-    res.json(err)
+    res.render("afterRegister", { user: user });
+  } catch (err) {
+    res.json(err);
   }
 };
 
@@ -56,9 +55,9 @@ exports.loginUser = async (req, res) => {
           error: "Email and password doesn't match",
         });
       } else {
-        return res.render('dashboard',{
-          user:user
-        })
+        return res.render("dashboard", {
+          user,
+        });
       }
     }
   } catch (err) {
